@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 from urllib.parse import urlparse
 
 from flask import Flask, jsonify, request
@@ -28,10 +29,15 @@ def normalize_domain(url):
     return '.'.join(domain.split('.')[-2:])
 
 
+def split_ids(value):
+    return value.split(',') if value else []
+
+
 organizations = load_organizations()
+users = {}
 
 
-@app.route('/api/autocomplete')
+@app.route('/api/autocomplete', methods=['GET'])
 def autocomplete():
     query = request.args.get('query', '').lower()
 
@@ -65,3 +71,37 @@ def autocomplete():
         })
 
     return jsonify(result)
+
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    user_id = str(uuid.uuid4())
+    liked_places = split_ids(request.form.get('liked_places'))
+    disliked_places = split_ids(request.form.get('disliked_places'))
+
+    users[user_id] = {'liked_places': liked_places,
+                      'disliked_places': disliked_places}
+
+    return jsonify({'user_id': user_id})
+
+
+@app.route('/api/recommend', methods=['GET'])
+def recommend():
+    user_id = request.args['user_id']
+
+    # TODO: ...
+
+    return jsonify({})
+
+
+@app.route('/api/rate', methods=['POST'])
+def rate():
+    user_id = request.form['user_id']
+    place_id = request.form['place_id']
+    liked = (request.form['liked'] == '1')
+
+    if liked:
+        users[user_id]['liked_places'].append(place_id)
+    else:
+        users[user_id]['disliked_places'].append(place_id)
+    return ''
