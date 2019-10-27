@@ -46,8 +46,8 @@ app = Flask(__name__)
 places_db = load_places_db()
 users_db = {
     "5f29f9df-6c85-4dfe-822c-83b450bc043d": {
-        "liked_chains": ['ChIJzX3TaKRLtUYRWXxaqlv-Mec', 'ChIJz4hlXAVLtUYRnQx4_-WcWTk', 'ChIJv6ZyGJ9LtUYRvKjPR427PjY'],
-        "disliked_chains": [],
+        "liked_chains": ['nudecafe.ru', 'zotman.ru',],
+        "disliked_chains": ['mcdonalds.ru', 'cofix.ru', 'kfc.ru'],
     }
 }
 recommender = Recommender(pd.read_csv(ORGS_MERGED_PATH))
