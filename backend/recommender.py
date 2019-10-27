@@ -97,8 +97,10 @@ class Recommender:
         return model.search(user_id='new_user', n_closest=n_closest)
 
 
-recommender = Recommender(pd.read_csv('orgs_merged.csv'))
-recommender.recommend(
-    ['ChIJzX3TaKRLtUYRWXxaqlv-Mec', 'ChIJz4hlXAVLtUYRnQx4_-WcWTk', 'ChIJv6ZyGJ9LtUYRvKjPR427PjY'],
-    [5, 5, 5],
-    binary_rating=False)[0]
+if __name__ == '__main__':
+    recommender = Recommender(pd.read_csv('../data/notebooks/orgs_merged.csv'))
+    places, similarity = recommender.recommend(
+        ['ChIJzX3TaKRLtUYRWXxaqlv-Mec', 'shoko.ru', 'cafemumu.ru'],
+        [5, 5, 5],
+        binary_rating=False, n_closest=len(recommender.df.org_id.unique()))
+    print(dict(zip(places, similarity)))
