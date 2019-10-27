@@ -19,6 +19,8 @@ ORGS_MERGED_PATH = os.path.join(PROJECT_PATH, 'data', 'notebooks', 'orgs_merged.
 HERE_APP_ID = 'C9BobK4a8dRtrYCfICXn'
 HERE_APP_CODE = 'EsbNtOHm6VitKrZ5DLZPow'
 HERE_API_BATCH_SIZE = 200
+GOOGLE_MAPS_TOKEN = os.environ["GOOGLE_MAPS_TOKEN"]
+GOOGLE_PHOTO_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1600&photoreference={reference}&key=" + GOOGLE_MAPS_TOKEN
 
 SECONDS_PER_MIN = 60.0
 
@@ -42,7 +44,12 @@ def load_places_db():
 app = Flask(__name__)
 
 places_db = load_places_db()
-users_db = {}
+users_db = {
+    "5f29f9df-6c85-4dfe-822c-83b450bc043d": {
+        "liked_chains": ['ChIJzX3TaKRLtUYRWXxaqlv-Mec', 'ChIJz4hlXAVLtUYRnQx4_-WcWTk', 'ChIJv6ZyGJ9LtUYRvKjPR427PjY'],
+        "disliked_chains": [],
+    }
+}
 recommender = Recommender(pd.read_csv(ORGS_MERGED_PATH))
 
 
@@ -171,12 +178,21 @@ def recommend():
 
     best_place = min(available_places,
                      key=lambda item: get_sort_key(item, query_tags))
+
+    users_db[user_id]["liked_chains"].append(best_place["chain_id"])  # hack for different places on each call
+
+    photos = best_place["photos"]
+    if len(photos) == 0:
+        photo_url = None
+    photo_url = GOOGLE_PHOTO_URL.format(reference=photos[0]["photo_reference"])
+
     return jsonify({
         'name': best_place['name'],
         'chain_id': best_place['chain_id'],
         'lat': best_place['geometry']['location']['lat'],
         'lng': best_place['geometry']['location']['lng'],
         'travel_time_mins': best_place['travel_time'] / SECONDS_PER_MIN,
+        'photo_url': photo_url,
     })
 
 
