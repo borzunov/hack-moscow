@@ -1,0 +1,22 @@
+PODS:
+  - HEREMaps (3.13.2)
+  - Kingfisher (5.9.0):
+    - Kingfisher/Core (= 5.9.0)
+  - Kingfisher/Core (5.9.0)
+
+DEPENDENCIES:
+  - HEREMaps
+  - Kingfisher
+
+SPEC REPOS:
+  trunk:
+    - HEREMaps
+    - Kingfisher
+
+SPEC CHECKSUMS:
+  HEREMaps: cc8908bb685c078b4b7f4d372c2ce3c4b03bf13a
+  Kingfisher: ff98240aebb7302bdc4f1ecd701761030ce18b16
+
+PODFILE CHECKSUM: ec11bb221c93c727a342825bebb808d33c53883e
+
+COCOAPODS: 1.8.4

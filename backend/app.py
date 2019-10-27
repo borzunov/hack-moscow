@@ -47,7 +47,7 @@ places_db = load_places_db()
 users_db = {
     "5f29f9df-6c85-4dfe-822c-83b450bc043d": {
         "liked_chains": ['nudecafe.ru', 'zotman.ru',],
-        "disliked_chains": ['mcdonalds.ru', 'cofix.ru', 'kfc.ru'],
+        "disliked_chains": ['mcdonalds.ru', 'cofix.ru', 'kfc.ru', 'burgerking.ru'],
     }
 }
 recommender = Recommender(pd.read_csv(ORGS_MERGED_PATH))
@@ -169,6 +169,9 @@ def recommend():
 
         available_places.append(place)
 
+    print("available", [place["chain_id"] for place in available_places])
+    print("user", cur_user)
+
     if not available_places:
         return jsonify({'error': 'No such places'})
 
@@ -181,10 +184,11 @@ def recommend():
 
     users_db[user_id]["liked_chains"].append(best_place["chain_id"])  # hack for different places on each call
 
-    photos = best_place["photos"]
+    photos = best_place.get("photos", [])
     if len(photos) == 0:
         photo_url = None
-    photo_url = GOOGLE_PHOTO_URL.format(reference=photos[0]["photo_reference"])
+    else:
+        photo_url = GOOGLE_PHOTO_URL.format(reference=photos[0]["photo_reference"])
 
     return jsonify({
         'name': best_place['name'],
