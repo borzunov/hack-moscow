@@ -1,10 +1,19 @@
-from collections import namedtuple
 from urllib.parse import urlparse
 
 import numpy as np
 
 
-LatLong = namedtuple('LatLong', ['lat', 'long'])
+class LatLong:
+    def __init__(self, lat, long):
+        self.lat = lat
+        self.long = long
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        return cls(float(dictionary['lat']), float(dictionary['lng']))
+
+    def __str__(self):
+        return '{:.5f},{:.5f}'.format(self.lat, self.long)
 
 
 def lat_long_dist_in_km(a, b):
